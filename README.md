@@ -38,37 +38,10 @@ This project synthesizes these components to determine whether the COVID-19 pand
      - **Outcome**: No statistically significant difference was found (p-value = 0.145), with a 95% confidence interval for the difference in means ranging from -214.03 to 1,442.01.  
      - **Implication**: At an aggregate level, the pandemic did not result in a significant change in the average monthly crime counts.
 
-3. **Visualization**
-   - **Time Series Plots**: Highlighting trends and disruptions in crime rates over time.
-   - **Bar Charts**: Illustrating the change in proportions of specific crime types pre- and post-COVID.
-
-4. **Interpretation**
+3. **Interpretation**
    - **Overall Crime Rates**: No significant shift in the mean monthly crime rates post-COVID, suggesting stability in total crime counts despite the pandemic.
    - **Composition of Crimes**: A significant increase in the proportion of violent crimes post-COVID indicates a shift in the nature of criminal activities.
    - **Potential Influences**: Factors such as lockdown measures, economic stressors, changes in law enforcement practices, and societal behaviors may have contributed to these observed changes.
-
----
-
-## Findings
-
-Based on the comprehensive analysis conducted, the following key findings emerged:
-
-1. **Stable Overall Crime Rates**:
-   - The Welch Two-Sample T-Test revealed no significant difference in the average monthly crime counts before (mean = 16,082.67) and after the onset of COVID-19 (mean = 16,802.67), with a p-value of 0.145 and a 95% confidence interval of [-214.03, 1,442.01]. This suggests that the pandemic did not substantially alter the overall crime volume in Los Angeles.
-
-2. **Increased Proportion of Violent Crimes**:
-   - The Difference of Proportions Test showed a significant increase in the proportion of violent crimes post-COVID (30.58%) compared to pre-COVID (29.43%), with a p-value of 9.88e-78 and a 95% confidence interval of [-0.0127, -0.0103]. This indicates a meaningful shift in the nature of criminal activities during the pandemic period.
-
-3. **Crime Category Trends**:
-   - **Property Crimes**: Exhibited a peak around 2018 followed by a steady decline towards 2024.
-   - **Sex Crimes**: Maintained the lowest crime rates among the categories with minimal year-to-year variation.
-   - **Violent Crimes**: Showed moderate fluctuations, remaining relatively stable with minor peaks and troughs.
-
-4. **Impact of COVID-19 on Crime Reporting**:
-   - The pronounced dip in crime counts around 2020 may reflect pandemic-related disruptions, changes in policing strategies, or variations in crime reporting practices rather than an actual decrease in criminal activities.
-
-5. **Data Distribution**:
-   - The distribution of total crimes approximates a normal distribution, centered around a mean of 16,082.67 with a standard deviation of 3,138.14, adhering to the Central Limit Theorem due to the large sample size.
 
 ---
 
