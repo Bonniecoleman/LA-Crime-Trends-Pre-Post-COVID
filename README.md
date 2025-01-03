@@ -20,7 +20,8 @@ By combining these elements, the project offers a systematic view of whether the
    - **Monthly/Yearly Trends**: Visual plots from 2010 to the present highlight overall changes. A pronounced dip around 2020 suggests potential pandemic-related disruptions but may also reflect altered policing or reporting practices.
    - **Consistency Pre- vs. Post-COVID**: Crime counts exhibit an upward trend prior to 2018, followed by some tapering and fluctuations moving into the COVID period.
 
-2. **Statistical Testing**  
+2. **Statistical Testing**
+(./data/proportion.png)
    - **Difference of Proportions Test**  
      - **Result**: Demonstrates a statistically significant increase in the proportion of *violent* crimes post-COVID compared to pre-COVID.  
      - **Interpretation**: While the total crime rate may not have changed drastically, the relative fraction of crimes categorized as violent appears to have gone up.
@@ -29,7 +30,7 @@ By combining these elements, the project offers a systematic view of whether the
      - **Outcome**: No statistically significant difference; the p-value did not meet typical alpha thresholds (e.g., 0.05), and the confidence interval included zero.  
      - **Implication**: When viewed at a macro-level (all crimes combined), the pandemic timeframe did not exhibit dramatic overall swings in the monthly average.
 
-3. **Interpretation**  
+4. **Interpretation**  
    - **No Large-Scale Rate Shift, but Composition Changes**: The difference-of-proportions result indicates the *type* of crime changed post-COVID, even though overall monthly counts did not.  
    - **Potential Influences**: Stay-at-home orders, altered social behaviors, economic stressors, or shifts in law enforcement priorities could have affected both reporting and occurrence of specific crimes.
 
@@ -62,7 +63,8 @@ By combining these elements, the project offers a systematic view of whether the
 
 ---
 
-**Contributor**: **Beomseong Kim**, Luis Ylizaliturri, Dein Ikiriko, David Greene
+**Contributor**: 
+**Beomseong Kim**, Luis Ylizaliturri, Dein Ikiriko, David Greene
 
 **Disclaimer**:  
 These findings are based on *reported* crime data only. Actual crime levels may differ due to underreporting or variations in local policing and reporting practices.
