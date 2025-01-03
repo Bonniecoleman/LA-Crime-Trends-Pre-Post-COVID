@@ -1,0 +1,278 @@
+---
+title: "Project Final Report"
+output: html_document
+date: "2024-05-01"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE,
+                      warning = FALSE, error = TRUE, fig.height = 3)
+library(tidyverse)
+library(lubridate)
+```
+
+### Group memebrs:
+
+Beomseong Kim, Luis Ylizaliturri, Dein Ikiriko, David Greene
+
+### Introduction
+Crime patterns in urban areas are complex and influenced by many factors ranging from socioeconomic conditions to major societal disruptions. Los Angeles, as a major metropolis, provides a compelling case study for understanding the dynamics of crime over time. Our investigation focuses on identifying patterns in crime rate and trend changes within Los Angeles between 2010 and the present. This initial focus will lay the groundwork for a more comprehensive review of various crime categories in subsequent discussions, aiming to provide insights into how significant events like the pandemic have potentially altered crime patterns in Los Angeles. We aim to analyze potential changes in crime trends between the periods before the start of the COVID-19 pandemic and the period after, focusing on potential changes in crime rates and potential changes in proportions of types of crimes. We found slight differences in the monthly crime rate during COVID, but not strong enough evidence to suggest a significant difference . In addition, we found that proportions of violent crime pre-covid and post-covid were significantly different through a proportions test. We can conclude that there was a difference of proportions, but there needs to be further investigation into what may have caused this change.
+
+
+### Background
+
+This report is based on two data sets titled “Crime Data from 2010 to 2019” and “Crime Data from 2020 to present”. This data was collected and maintained by the Los Angeles Police Department (LAPD) from transcribed crime reports from paper documents to digital databases. These datasets can be accessed through the open data platform, Data.gov (Crime Data from 2010 to 2019, Crime Data from 2020 to present). Our data consists of a total of 2,750,136 observations where each row represents one recorded crime instance. 
+
+Key variables within these datasets include: 
+
+Date Occ: The date when the crime occurred.
+Crm Cd Desc: The description of the crime type
+
+Each of these variables play a crucial role in analyzing crime trends and patterns, allowing us to gain a deeper understanding of the dynamics of criminal activity in Los Angeles through the years. 
+
+Our research focuses on identifying changes in crime rates in Los Angeles from 2010 to the present, with an interest in how specific types of crimes rates, Violent, Property, and Sex crimes, have changed over time. This analysis is particularly relevant in light of the societal and global changes such as the impact of the COVID-19 pandemic on crime rates and the trends of crimes committed during this period.
+
+The COVID-19 pandemic represents an unusual factor that could significantly affect the results of the crime data. The imposed lockdowns, restrictions, and the overall change in social trends during this period may have influenced the nature and frequency of crimes in unprecedented ways.
+
+Our analysis aims to identify shifts in crime rates and crime trends in Los Angeles from 2010 to the present, with a particular focus on how violent crimes, property crimes, and sex crimes have evolved. 
+
+We delineated our analysis into two primary periods: pre-COVID-19 (prior to March 19, 2020) and post-COVID-19 (from March 19, 2020, onward). This division is based on the initiation of lockdown mandates in Los Angeles, which serves as a natural demarcation in our study timeline.
+
+To refine our analysis, we also categorized crimes into violent, property, and sexual—based on their descriptions under the "Crm Cd Desc" variable. We then assessed the proportion of violent crimes relative to total crime occurrences for both time periods. We performed Hypothesis testing to statistically compare the mean monthly crime rates between the Pre-COVID and Post-COVID periods and to analyze the crime trends during this period by comparing the proportion of violent crimes before and after the onset of the pandemic, aiming to uncover possible changes in crime trends.
+
+### Analysis
+
+```{r, echo = F}
+crime_2010_2019 = read_csv("./Crime_Data_from_2010_to_2019.csv")
+crime_2020_2024 = read_csv("./Crime_Data_from_2020_to_present.csv")
+```
+
+```{r, echo = F}
+cleaned_2010_2019 = crime_2010_2019 %>%
+ rename(date = "DATE OCC",
+         type = "Crm Cd Desc",
+         sex = "Vict Sex")%>%
+  select(date, type, sex)
+
+cleaned_2020_2024 = crime_2020_2024 %>%
+ rename(date = "DATE OCC",
+         type = "Crm Cd Desc",
+         sex = "Vict Sex")%>%
+  select(date, type, sex)
+  
+crime_data = bind_rows(cleaned_2010_2019,cleaned_2020_2024) %>%
+  mutate(date = mdy_hms(date), year = year(date), month = month(date)) %>%
+  drop_na()
+```
+
+```{r, echo = F}
+crime_data = crime_data %>%
+  mutate(
+    cate_violent = case_when(
+    grepl("ASSAULT|ROBBERY|RAPE|HOMICIDE|MURDER|KIDNAPPING|SEXUAL|SODOMY|BATTERY|MANSLAUGHTER|SHOOTING", type, ignore.case = TRUE) ~ "Violent",
+    TRUE ~ "Non-Violent"
+  ),
+  cate_property = case_when(
+grepl("THEFT|BURGLARY|VANDALISM|ROBBERY|LARCENY|FRAUD|EMBEZZLEMENT|FORGERY|ARSON|STOLEN|SHOPLIFT|GRAND THEFT|PETTY THEFT|MOTOR VEHICLE|COIN MACHINE|TRESPASS|VEHICLE|BIKE|BOAT|IDENTITY THEFT|CREDIT CARD|BUNCO|DEFRAUD|DISHONEST", type, ignore.case = TRUE) ~ "Property Crime",
+TRUE ~ "Non-Property Crime"),
+  cate_sex = case_when(
+    grepl("RAPE, FORCIBLE|RAPE, ATTEMPTED|SEXUAL PENETRATION W/FOREIGN OBJECT|SODOMY/SEXUAL CONTACT B/W PENIS OF ONE PERS TO ANUS OTH|LEWD/LASCIVIOUS ACTS WITH CHILD|INDECENT EXPOSURE|LETTERS, LEWD - TELEPHONE CALLS, LEWD|CHILD ANNOYING \\(17YRS \\& UNDER\\)|CHILD PORNOGRAPHY|PEEPING TOM|BEASTIALITY, CRIME AGAINST NATURE SEXUAL ASSLT WITH ANIM|PANDERING|PIMPING|HUMAN TRAFFICKING - COMMERCIAL SEX ACTS|HUMAN TRAFFICKING - INVOLUNTARY SERVITUDE", type, ignore.case = TRUE) ~ "Sex Crime",
+    TRUE ~ "Non-Sex Crime"),
+  period = case_when(
+      date < mdy("03/19/2020") ~ "Pre-COVID",
+      TRUE ~ "Post-COVID"))
+```
+
+```{r, echo = F}
+crime_trends = crime_data %>%
+  group_by(year) %>%
+  summarize(
+    Sex_Crimes = sum(cate_sex == "Sex Crime"),
+    Property_Crimes = sum(cate_property == "Property Crime"),
+    Violent_Crimes = sum(cate_violent == "Violent"))
+```
+
+```{r, echo = F}
+crime_summary = crime_data %>%
+  group_by(period) %>%
+  summarize(violent = sum(cate_violent == "Violent"),
+            sex_crime = sum(cate_sex == "Sex Crime"),
+            property = sum(cate_property == "Property Crime"),
+            total = n(),
+            p_violent = violent/total,
+            p_sexual = sex_crime/total,
+            p_property = property/total)
+#sample sizes 
+sample_size_precovid = crime_summary %>% filter(period == "Pre-COVID")%>%pull(total)
+sample_size_postcovid = crime_summary %>% filter(period == "Post-COVID")%>%pull(total)
+n = c(sample_size_precovid, sample_size_postcovid)
+
+#violent counts
+violent_precovid = crime_summary %>% filter(period == "Pre-COVID")%>%pull(violent)
+violent_postcovid = crime_summary %>% filter(period == "Post-COVID")%>%pull(violent)
+violent_x = c(violent_precovid, violent_postcovid)
+```
+
+```{r, echo = F}
+pre_covid <- crime_data %>%
+  filter(date <= as.Date("2020-02-29"))
+
+#From May 2020 to March 2024
+post_covid <- crime_data %>%
+  filter(date >= as.Date("2020-05-01") & date <= as.Date("2024-03-31"))
+
+monthly_totals_pre <- pre_covid %>%
+  group_by(year, month) %>%
+  summarise(Total_Crimes = n(), .groups = 'drop')
+
+# monthly totals for post-COVID
+monthly_totals_post <- post_covid %>%
+  group_by(year, month) %>%
+  summarise(Total_Crimes = n(), .groups = 'drop')
+```
+
+```{r, echo = F}
+ggplot(crime_trends, aes(x = year)) +
+  geom_point(aes(y = Sex_Crimes), size = 0.7) +
+  geom_point(aes(y = Property_Crimes), size = 0.7) +
+  geom_point(aes(y = Violent_Crimes), size = 0.7) +
+  geom_line(aes(y = Sex_Crimes, color = "Sex Crimes")) +
+  geom_line(aes(y = Property_Crimes, color = "Property Crimes")) +
+  geom_line(aes(y = Violent_Crimes, color = "Violent Crimes")) +
+  labs(title = "Trends of Sex, Property, and Violent Crimes from 2010 to Present",
+       x = "Year", y = "Number of Crimes",
+       color = "Crime Type") +
+  scale_color_manual(values = c("Sex Crimes" = "blue", "Property Crimes" = "red", "Violent Crimes" = "green")) +
+   scale_x_continuous(breaks = unique(crime_trends$year)) +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  geom_vline(xintercept = 2020, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = 2024, linetype = "dashed", color = "black")
+```
+
+ **Description** 
+ 
+The line plot visualizes the trends of the number of crimes categorized by crime type: property, sex, and violent crimes, delineated by red, blue, and green lines, respectively. The x-axis of the graph measures time in years, and the y-axis quantifies the number of crimes, escalating in increments that suggest a range up to over 150,000. The black vertical lines represent the timeline from 2020 to 2024, marking the start and end of the Covid period. We can see that the “Property crimes” demonstrate a peaked trend with a significant rise and fall, reaching their peak around 2018, and then a linear decline toward the present. On the other hand, the “Sex crimes” show the lowest crime rates among the three types, with only slight year-to-year changes. The “Violent crimes” portrays moderate fluctuation, indicating a relatively stable trend with minor peaks and troughs. The data culminates in 2024, with an apparent incomplete dataset for the year, which explains that the figures for 2024 are preliminary. This graph provides a clear visual comparison of crime trends over fourteen years, allowing for an analysis of patterns. 
+
+**Assumptions on Data**
+
+To address the continuity of our values prior to conducting our hypothesis tests, we calculated monthly crime rates to perform our test on continuous values. 
+
+For the difference of proportions test we must be wary of certain politics that may arise when evaluating reported crimes. There can be sex and race bias in crime reporting, for example; certain crimes may be more likely to be reported if specific demographics are involved. This could skew data and results of analysis and violate the assumption of random sampling.
+
+
+Additionally we need to consider that our sample size for the pre-COVID period is much greater compared to our sample size of the post-COVID period.
+
+
+After calculating the distribution of “Total_Crimes” we found it represents an approximately normal distribution, with a single prominent peak in the center. This is likely due to our large sample size as this follows the Central Limit Theorem. The main peak of the density curve is centered around 16000, which aligns well with the stated mean of 16082.67. While the distribution is not perfectly normal due to the small deviations or outliers, it still exhibits an overall bell-shaped curve that is reasonably close to a normal distribution.
+
+
+#### Inference on Difference of Proportions
+
+With our data assumptions addressed, we conducted a difference of proportions hypothesis test to compare the proportions of violent crimes of the pre-COVID-19 period (January 1st, 2010 - March 19, 2020) with the violent crimes proportion of the post-COVID-19 period (March 19, 2020 - April 4, 2024) in Los Angeles. 
+
+Let $p_1$ be the proportion of violent crimes of the pre-COVID period.  
+Let $p_2$ be the proportions of violent crimes of the post-COVID period.
+
+Hypothesis
+
+$$
+H_0: p_1 = p_2 \\
+H_a: p_1 \neq  p_2 
+$$
+
+```{r, echo = F}
+#Violent Proportions Test
+violent_prop_test_result = prop.test(violent_x, n, correct = FALSE)
+
+#Violent Proportion Graph
+violent_prop1 = violent_prop_test_result$estimate["prop 1"]
+violent_prop2 = violent_prop_test_result$estimate["prop 2"]
+violent_prop_data <- data.frame(
+  Period = c("Pre-COVID", "Post-COVID"),
+  Proportion = c(violent_prop1, violent_prop2)
+)
+ggplot(violent_prop_data, aes(x = Period, y = Proportion, fill = Period)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  coord_cartesian(ylim = c(min(violent_prop_data$Proportion) - 0.001, max(violent_prop_data$Proportion) + 0.001)) +
+  labs(title = "Proportions of Violent Crimes by Period",
+       x = "Period",
+       y = "Proportion") +
+  theme_minimal()
+```
+
+
+**Description of Graph**
+
+The bar plot visualizes the proportion of violent crimes during pre-COVID period and post-COVID period. The X-axis represents the period (Pre-COVID or Post-COVID), and the y-axis represents the proportion of the violent crimes against the total number of crimes committed. We visually observed that proportion of violent crimes post-COVID was higher than the proportion of violent crimes pre-COVID. 
+
+**Result of Proportions Test**
+
+After performing a difference of proportions test on violent crimes between the two periods being analyzed, the result shows a sample difference of -0.01152732 between the two proportions with a 95% confidence interval of the true difference between -0.01274383 -0.01031082. The proportion of violent crimes pre-COVID according to our sample is 0.2942799 while the post-COVID proportions is 0.3058073. The confidence interval does not cross 0 showing a very high probability that the true proportion of post-COVID violent crimes is greater than that of pre-COVID. With a resulting p-value of 9.883167e-78, we conclude that this difference of proportions is statistically significant and we therefore reject the null hypothesis that the proportions of violent crimes of the two periods being analyzed is the same.
+
+
+### Welch Two-Sample T-test
+
+Let $\mu_1$ be the monthly average crimes pre-COVID   
+Let $\mu_2$ be the monthly average crimes post-COVID
+
+Hypothesis
+Null Hypothesis (H0): No change in crime rates due to COVID-19 ($\mu_1 = \mu_2$).
+Alternative Hypothesis (H1): Significant increase or decrease in crime rates due to COVID-19 ($\mu_1 \neq \mu_2$).
+
+$$
+H_0: \mu_1 = \mu_2 \\
+H_a: \mu_1 \neq  \mu_2 
+$$
+
+```{r, echo = F}
+monthly_totals = crime_data %>%
+  group_by(year, month) %>%
+  summarise(Total_Crimes = n(), .groups = 'drop')
+
+summary_stats = monthly_totals %>%
+  summarise(
+    total_crimes = sum(Total_Crimes),
+    mean_crimes = mean(monthly_totals$Total_Crimes),
+    sd_crimes = sd(monthly_totals$Total_Crimes),
+    .groups = 'drop')
+```
+
+```{r, echo=F, eval=F, fig.show='hide'}
+ggplot(monthly_totals, aes(Total_Crimes)) +
+  geom_density()
+```
+
+
+```{r, echo = F}
+t_test_results = t.test(monthly_totals_pre$Total_Crimes, monthly_totals_post$Total_Crimes)
+```
+
+**Result of hypothesis test**
+To assess the impact of the COVID-19 pandemic on crime rates in Los Angeles, we conducted a Welch Two Sample t-test comparing the total crimes reported monthly before (up to February 2020) and during (from May 2020 to March 2024) the pandemic. Our analysis found no statistically significant change in crime rates, with a large p-value of 0.145. This suggests that the differences in average monthly crime rates between these periods can be attributed to natural variability rather than the pandemic's influence.
+
+The 95% confidence interval for the difference in mean crime rates ranged from -214.0324 to 1442.0069. Notably, this confidence interval includes zero, which supports the conclusion that the differences in crime rates are not statistically significant.
+
+Given these results, we fail to reject the Null Hypothesis (H0) that there is no change in crime rates due to COVID-19. These findings suggest that while there may be individual monthly fluctuations, they do not collectively amount to a statistically significant trend change that can be attributed to the pandemic.
+
+### Discussion
+
+After reviewing the crime rate trends, in Los Angeles from 2010 to the present several key findings have emerged. The data shows a varying pattern in reported crimes over the years averaging around 16,802.67 incidents monthly with a standard deviation of 3138.14. Interestingly, there was a decline in reported crimes in 2020 seen on the graph that could possibly be linked to the impact of the COVID 19. 
+
+After analyzing the data further using methods like the Welch Two Sample t-test to compare the average monthly crimes rate pre-COVID and post-COVID, no significant evidence supporting a difference in crime rates between the periods was found. This suggests that the fluctuations observed may be more natural variability than direct consequences of the pandemic. 
+
+Moreover delving into crime categories such as crimes, property crimes, and sex crimes reveals additional insights. These categories show fluctuations over time. Specifically, using proportion tests comparing the proportion of violent crimes pre-COVID and post-COVID indicate a difference in the proportions of violent crimes between the two periods. The result of the two sample proportions test shows the proportion of violent crimes was higher post-COVID than the proportion pre-COVID. The test on difference of proportions concluded to reject the null hypothesis that between periods they shared the same proportion of violent crimes. This shows that COVID-19 could have had some impact on the proportion of violent crimes during these periods underscoring the need for further investigation into what drives these variations. This may include investigating the possible impact of the emergency lockdowns or changes in policies implemented that could have effects on crime rates. Other factors that are worth investigating include the effect of current events such as protests or economic prosperity or lack thereof that could lead to the changes in crime trends. 
+
+Regarding how COVID 19 has influenced crime rates the analysis offers a nuanced viewpoint. While there was a decrease in reported crimes in 2020 the statistical examination does not definitively prove a link between the pandemic and changes in monthly crime rates. This highlights the significance of taking into account other factors when understanding crime trends. 
+
+What works in prevention? How are we tackling crime? What does crime mean to the various communities in town? What happens when anti-social behavior becomes criminal behavior? What happens when we add more police to a community? Questions about the society in which we all live and the economy we all exchange with. These are among the myriad possible research questions that emerge from crime, and can be enriched using mixed-methods approaches, repeated or longitudinal understandings of change. From there, future research could theoretically test the relationship between crime and socio-economic indicators (ie, combined unemployment rates, poverty rates or housing standard indices) at the same level of measure. As well as, comparative analyses across the urban areas or regions to generate contextual-level insights into determining factors of crime and its patterns. Possible errors in the analysis is the lack of data following COVID 19. This analysis is only able to evaluate three years post COVID 19 compared to ten year pre-COVID. This could skew data as the data is not fully mature not allowing for totally accurate patterns to occur. On top of the analysis not taking into consideration other factors of crime such as area, economic prosperity, and political events.
+
+In summary, while this analysis provides valuable insights into crime rate patterns in Los Angeles, additional research is warranted to fully unpack the complexities underlying these trends. We saw that there were fluctuating trends in total crime counts averaging out to 16,802.67 reported crimes monthly, but with a standard deviation of 3138.14 suggesting the small drop in total crime cannot be directly correlated to COVID 19. On Top of that, despite a noticeable decrease in reported crimes during the year 2020, the statistical analysis using a Welch Two Sample t-test did not find significant evidence supporting any pandemic-related change in crime rates. Although, proportion tests did reveal significant differences in specific crimes between post-COVID and pre-COVID, further emphasizing the complexity of crime dynamics and need for comprehensive investigation into the underlying factors that influenced these changes. With a smaller sample size in data post-COVID it is hard to solidify whether they are actual patterns or just natural variations. All in all these analyses contribute to the broader understanding that while the pandemic may have influenced certain aspects of crime, its direct impact on overall crime rates remains uncertain. By adopting a multidisciplinary approach and integrating diverse methodologies, it is possible to contribute to a more comprehensive understanding of crime dynamics and facilitate evidence-based policy formulation. 
+
+### References
+
+**The sources of data:**  
+  [Crime Data from 2010 to 2019](https://catalog.data.gov/dataset/crime-data-from-2010-to-2019) (From Data.gov)
+  [Crime Data from 2020 to Present](https://catalog.data.gov/dataset/crime-data-from-2020-to-present) (From Data.gov)
+**Other reference**
+  (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7996058/#:~:text=In%20California%2C%20because%20of%20a,trauma%20center%20in%20Los%20Angeles) (From National Library of Medicine)
