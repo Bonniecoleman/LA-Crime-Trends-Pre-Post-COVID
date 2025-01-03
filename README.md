@@ -64,8 +64,6 @@ By combining these elements, the project offers a systematic view of whether the
 
 ---
 
-**Contributor**: 
-**Beomseong Kim**, Luis Ylizaliturri, Dein Ikiriko, David Greene
+**Contributor**: **Beomseong Kim**, Luis Ylizaliturri, Dein Ikiriko, David Greene
 
-**Disclaimer**:  
-These findings are based on *reported* crime data only. Actual crime levels may differ due to underreporting or variations in local policing and reporting practices.
+**Disclaimer**: These findings are based on *reported* crime data only. Actual crime levels may differ due to underreporting or variations in local policing and reporting practices.
