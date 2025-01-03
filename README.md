@@ -1,7 +1,5 @@
 # LA-Crime-Trends-Pre-Post-COVID
 
-# LA-Crime-Trends-Pre-Post-COVID
-
 A data-focused project investigating crime trends in Los Angeles from 2010 to the present, with special emphasis on analyzing how the COVID-19 pandemic may have influenced both overall crime rates and the proportions of crime types (violent, property, and sex crimes).
 
 ---
