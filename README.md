@@ -57,16 +57,6 @@ The analysis of Los Angeles crime data from 2010 to 2024 provides nuanced insigh
   
 - **Potential Influencing Factors**: The changes observed may be influenced by a combination of factors, including economic stress, altered social behaviors, changes in law enforcement practices, and variations in crime reporting mechanisms during the pandemic.
 
-**Implications for Policy and Future Research**:
-
-- **Targeted Interventions**: The increase in violent crimes necessitates focused strategies to address the specific factors contributing to this trend.
-  
-- **Comprehensive Data Collection**: Extending the post-COVID data window beyond 2024 will enhance the robustness of trend analyses and help in understanding long-term impacts.
-  
-- **Integration of Socioeconomic Indicators**: Incorporating variables such as unemployment rates, housing instability, and economic downturns could provide deeper insights into the drivers of crime trends.
-  
-- **Geospatial Analysis**: Mapping crime data at the district or neighborhood level may uncover spatial disparities and inform localized policy interventions.
-
 **Limitations**:
 
 - **Data Window Disparity**: The post-COVID data covers a shorter period (approximately 4 years) compared to the pre-COVID data (10 years), which may affect the robustness of trend comparisons.
