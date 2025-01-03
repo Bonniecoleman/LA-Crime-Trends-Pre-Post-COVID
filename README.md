@@ -21,7 +21,7 @@ By combining these elements, the project offers a systematic view of whether the
    - **Consistency Pre- vs. Post-COVID**: Crime counts exhibit an upward trend prior to 2018, followed by some tapering and fluctuations moving into the COVID period.
 
 2. **Statistical Testing**
-(./graph/proportion.png)
+!(./graph/proportion.png)
    - **Difference of Proportions Test**  
      - **Result**: Demonstrates a statistically significant increase in the proportion of *violent* crimes post-COVID compared to pre-COVID.  
      - **Interpretation**: While the total crime rate may not have changed drastically, the relative fraction of crimes categorized as violent appears to have gone up.
