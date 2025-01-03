@@ -17,7 +17,7 @@ By combining these elements, the project offers a systematic view of whether the
 ## Analysis Summary
 
 1. **Time Series Examination**
-![](./graph/time-series)
+![](./graph/time-series.png)
    - **Monthly/Yearly Trends**: Visual plots from 2010 to the present highlight overall changes. A pronounced dip around 2020 suggests potential pandemic-related disruptions but may also reflect altered policing or reporting practices.
    - **Consistency Pre- vs. Post-COVID**: Crime counts exhibit an upward trend prior to 2018, followed by some tapering and fluctuations moving into the COVID period.
 
